@@ -24,6 +24,15 @@ builder.Services.AddAuthentication(options =>
             ValidAudience = jwtAudience,
             IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(jwtKey))
         };
+    })
+    .AddCookie("External")
+    .AddGoogle("Google", options =>
+    {
+        options.ClientId = builder.Configuration["Google:ClientId"]
+            ?? throw new InvalidOperationException("Google ClientId is not configured.");
+        options.ClientSecret = builder.Configuration["Google:ClientSecret"]
+            ?? throw new InvalidOperationException("Google ClientSecret is not configured.");
+        options.SignInScheme = "External"; // where Google's identity gets parked
     });
 
 builder.Services.AddAuthorization();
